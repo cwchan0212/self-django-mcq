@@ -1,0 +1,66 @@
+{% extends '../../base.html' %}
+{% load static %}
+{% block script %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/styles.css' %}" />
+<script src="{% static '/js/script.js' %}" ></script>
+{% endblock script %} 
+{% block content %}
+
+<div class="content py-2 pt-4" style="margin-top: 1.8rem">
+    <div class="d-flex align-items-center justify-content-center m-auto my-2 bg-transparent text-dark">
+        <img class="header-img" src="{{ headers.image }}"/>
+        <h4>{{ headers.text }}</h4>
+    </div>
+
+    {% if messages %}
+    <div class="container px-0 py-0">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <table class="text-justify table table-striped px-0 py-0 rounded-0">
+        <thead>
+            <tr class="bg-secondary text-center text-white rounded-top">
+                <th width="5%"><button class="btn btn-light btn-sm px-0 py-0" style="width:24px; height:24px" disabled><i class="fa-regular fa-note-sticky fa-xs"></i></button></th>
+                <th>Text</th>
+                <th width="5%">Min</th>
+                <th width="5%">Max</th>
+                <th class="text-center" width="10%">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <form action="section/add" method="post">
+                {% csrf_token %}
+                <tr class="text-center align-middle">
+                    <td><i class="fa-solid fa-hashtag"></i></td>
+                    <td><input class="form-control form-control-sm" type="text" name="section_text"> </textarea></td>
+                    <td><input class="form-control form-control-sm" type="number" name="questions_min_drawn" size="3" min="0" max="24" maxlength="2"></td>
+                    <td><input class="form-control form-control-sm" type="number" name="questions_max_drawn" size="3" min="0" max="24" maxlength="2"></td>
+                    <td><button class="btn btn-outline-dark btn-sm" type="submit" name="section_mode" value="add" class="form-control form-control-sm"><i class="fa-regular fa-square-plus"></i></button></td>
+                </tr>
+            </form>
+            {% for section in sections %}
+            <form action="section/action" method="post">
+                {% csrf_token %}
+                <tr class="text-center align-middle">
+                    <td width="5%">{{ section.section_id }}<input type="hidden" name="section_id" value="{{ section.section_id }}"></td>
+                    <td><input class="form-control form-control-sm" type="text" name="section_text" value="{{ section.section_text }}"></td>
+                    <td width="8%"><input class="form-control form-control-sm" type="number" name="questions_min_drawn" min="0" max="24" maxlength="2" value="{{ section.questions_min_drawn }}"></td>
+                    <td width="8%"><input class="form-control form-control-sm" type="number" name="questions_max_drawn" min="0" max="24" maxlength="2" value="{{ section.questions_max_drawn }}"></td>
+                    <td width="10%" align="center">
+                        <button class="btn btn-outline-dark btn-sm" type="submit" name="section_mode" value="update" class="form-control form-control-sm"><i class="fa-regular fa-pen-to-square"></i></button>
+                        <button class="btn btn-outline-dark btn-sm" type="submit" name="section_mode" value="delete" class="form-control form-control-sm"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            </form>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
+{% block footer %}
+{% endblock footer %}

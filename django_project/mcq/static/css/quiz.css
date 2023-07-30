@@ -1,0 +1,26 @@
+html {
+    scroll-padding-top: 4rem;
+}
+
+navbar {
+    height: 3rem;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+.correct-answer {
+    color: red;
+    font-weight: 500;
+}
+
+.question {
+    font-weight: 500;
+}
+
+.explanation {
+    background: lightyellow;
+    font-style: italic;
+    font-weight: 500;
+}

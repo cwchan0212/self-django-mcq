@@ -1,0 +1,36 @@
+{% extends '../../base.html' %}
+{% load static %}
+{% block script %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/styles.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static '/css/quiz.css' %}" />
+<script type="text/javascript" src="{% static '/js/script.js' %}"></script>
+
+{% endblock script %}
+{% block content %}
+<script type="text/javascript" src="{% static '/js/quiz.js' %}"></script>
+
+<div class="content py-2 pt-4" style="margin-top: 1.8rem">
+
+
+  <div class="d-flex align-items-center justify-content-center m-auto my-2 bg-transparent text-dark">
+    <img class="header-img" src="{{ headers.image }}" />
+    <h4>{{ headers.text}}</h4>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-m-4" id="sticky-sidebar">
+        Sidebar
+      </div>
+      <div class="col-m-8" id="main">
+        Main Area
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+{% endblock content %}
+{% block footer %}
+{% endblock footer %}

@@ -1,0 +1,204 @@
+{% extends '../../base.html' %} 
+{% load static %}
+
+{% block script %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/styles.css' %}" />
+<script src="{% static '/js/script.js' %}" ></script>
+{% endblock script %} 
+{% block content %}
+<div class="content py-2 pt-4" style="margin-top: 1.8rem">
+    <div class="d-flex align-items-center justify-content-center m-auto my-2 bg-transparent text-dark">
+        <img class="header-img" src="{{ headers.image }}"/>
+        <h4>{{ headers.text }}</h4>
+    </div>
+    {% if messages %} 
+        {% for message in messages %}
+        <div class="container alert alert-danger">{{ message }}</div>
+        {% endfor %} 
+    {% endif %}
+    <form action="/data/question/add" method="post">
+        {% csrf_token %}
+        <table class="text-justify px-2 py-2 form-control">
+            <tbody>
+                <tr>
+                    <td width="15%" class="align-text-top"><b>Section</b></td>
+                    <td colspan="2">
+                        <select class="form-select form-select-sm" name="section_id">
+                            {% for section in sections %} 
+                            <option value="{{ section.section_id }}" {% if section.section_id == input.section_id %}selected{% endif %}>{{ section.section_id }}. {{ section.section_text }} {% endfor %}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="15%" class="align-text-top"><b>Question</b></td>
+                    <td colspan="2"><textarea class="form-control form-control-sm" name="question_text" cols="180" rows="5">{{ input.question_text }}</textarea></td>
+                </tr>
+                <tr>
+                    <td width="15%" class="align-text-top"><b>Explanation</b></td>
+                    <td colspan="2"><textarea class="form-control form-control-sm" name="question_explanation" cols="180" rows="5">{{ input.question_explanation }}</textarea></td>
+                </tr>
+                <tr>
+                    <td width="15%" class="align-text-top"><b>Type of Answer</b></td>
+                    <td colspan="2">
+                        <label> <input type="radio" class="form-check-input" name="answer_type" value="1" onchange="toggleOptions('checkbox')" {% if input.answer_type == 1 %}checked{% endif %}> M.C. Questions </label>
+                        <label> <input type="radio" class="form-check-input" name="answer_type" value="2" onchange="toggleOptions('radio')" {% if input.answer_type == 2 %}checked{% endif %}> True or False </label>
+                    </td>
+                </tr>
+                {% if input.answer_type == "1" %}
+                <!-- 1 // Start: Checkbox options //-->
+                <tr id="checkboxOptions1">
+                    <td width="15%"><b>Option 1</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.0 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="1" {% if "1" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions2">
+                    <td width="15%"><b>Option 2</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.1 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="2" {% if "2" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions3">
+                    <td width="15%"><b>Option 3</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.2 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="3" {% if "3" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions4">
+                    <td width="15%"><b>Option 4</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.3 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="4" {% if "4" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions5">
+                    <td width="15%"><b>Option 5</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.4 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="5" {% if "5" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions6">
+                    <td width="15%"><b>Option 6</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.5 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="6" {% if "6" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions7">
+                    <td width="15%"><b>Option 7</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.6 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="7" {% if "7" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions8">
+                    <td width="15%"><b>Option 8</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.7 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="8" {% if "8" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <!-- // End: Checkbox options //-->
+                {% elif input.answer_type == "2" %}
+                <!-- 2. // Start: Radio options //-->
+                <tr id="radioOptions1" style="display: none">
+                    <td width="15%"><b>Option 1</b></td>
+                    <td><input class="form-control form-control-sm" type="text" name="choice_text" value="True" readonly /></td>
+                    <td width="5%" align="center"><input class="form-check-input" type="radio" name="answer_id" value="9" {% if "9" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="radioOptions2" style="display: none">
+                    <td width="15%"><b>Option 2</b></td>
+                    <td><input class="form-control form-control-sm" type="text" name="choice_text" value="False" readonly /></td>
+                    <td width="5%" align="center"><input class="form-check-input" type="radio" name="answer_id" value="10" {% if "10" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <!-- // End: Radio options //-->
+                {% else %}
+                <!-- 3. // Start: Checkbox options //-->
+                <tr id="checkboxOptions1">
+                    <td width="15%"><b>Option 1</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.0 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="1" {% if "1" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions2">
+                    <td width="15%"><b>Option 2</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.1 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="2" {% if "2" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions3">
+                    <td width="15%"><b>Option 3</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.2 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="3" {% if "3" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions4">
+                    <td width="15%"><b>Option 4</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.3 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="4" {% if "4" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions5">
+                    <td width="15%"><b>Option 5</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.4 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="5" {% if "5" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions6">
+                    <td width="15%"><b>Option 6</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.5 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="6" {% if "6" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions7">
+                    <td width="15%"><b>Option 7</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.6 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="7" {% if "7" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="checkboxOptions8">
+                    <td width="15%"><b>Option 8</b></td>
+                    <td>
+                        <input class="form-control form-control-sm" type="text" name="choice_text" maxlength="255" value="{{ input.choice_text.7 }}" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="checkbox" name="answer_id" value="8" {% if "8" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <!-- // End: Checkbox options //-->
+                <!-- // Start: Radio options //-->
+                <tr id="radioOptions1" style="display: none">
+                    <td width="15%"><b>Option 1</b></td>
+                    <td><input class="form-control form-control-sm" type="text" name="choice_text" value="True" readonly /></td>
+                    <td width="5%" align="center"><input class="form-check-input" type="radio" name="answer_id" value="9" {% if "9" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <tr id="radioOptions2" style="display: none">
+                    <td width="15%"><b>Option 2</b></td>
+                    <td><input class="form-control form-control-sm" type="text" name="choice_text" value="False" readonly /></td>
+                    <td width="5%" align="center"><input class="form-check-input" type="radio" name="answer_id" value="10" {% if "10" in input.answer_id %} checked {% endif %} /></td>
+                </tr>
+                <!-- // End: Radio options //-->
+                {% endif %}
+                <tr>
+                    <td width="15%"></td>
+                    <td colspan="2" class="d-flex justify-content-center px-2 mt-2 py-2">
+                        <button class="btn btn-outline-dark btn-sm" style="width: 80px" type="submit" name="action" value="add"><i class="fa-regular fa-paper-plane"></i> Save</button>
+                        <button class="btn btn-outline-dark btn-sm" style="width: 80px" type="button" onClick="goReset()" name="action" value="reset"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+{% endblock content %} 
+{% block footer %} 
+{% endblock footer %}

@@ -1,0 +1,114 @@
+{% extends '../../base.html' %}
+{% load static %}
+{% load mcq_filters %}
+{% block script %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/styles.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static '/css/quiz.css' %}" />
+<script type="text/javascript" src="{% static '/js/script.js' %}" ></script>
+
+{% endblock script %} 
+{% block content %}
+<script type="text/javascript" src="{% static '/js/quiz.js' %}"></script>
+
+<div class="content py-2 pt-4" style="margin-top: 1.8rem">
+  <form id="quiz_section_change" action="/data/quiz" method="post"> {% csrf_token %}
+
+    
+      <div class="d-flex align-items-center justify-content-center m-auto my-2 bg-transparent text-dark">
+          <img class="header-img" src="{% static '/img/quiz.png' %}"/> 
+          <h4>Quiz: Test your knowledge</h4>
+        </div>
+
+      
+        <div class="text-center rounded bg-dark text-white px-2 py-2"> 
+          <div class="input-group">
+            <input type="hidden" name="quiz_mode_session" value="{{ request.session.quiz_mode }}">
+            <input type="hidden" name="section_id" value="{{ request.session.section_id }}">
+
+            <select class="form-select form-select-sm" name="section_id" onChange="sectionChange()">
+                <option></option>  
+              {% for section in sections %}
+                <option value="{{ section.section_id }}" {% if inputs.section_id == section.section_id|stringformat:"d" %} selected {% endif %}>{{ section.section_id }}. {{ section.section_text }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="quiz_mode" style="height:36px" value="{% if request.session.quiz_mode == 'random' or quiz_mode == 'random' %}all{% else %}random{% endif %}"  
+                class="btn btn-outline-{% if request.session.quiz_mode == 'random' %}light{% else %}secondary{% endif %} btn-sm">
+                <i class="fa-solid fa-filter{% if request.session.quiz_mode != 'random' %}-circle-xmark{% endif %} fa-xs"></i>
+            </button>
+          </div>   
+        </div>
+
+
+  </form>
+
+
+  {% if questions|length > 0 %}
+
+    <div class="text-center my-2">
+      <h4>Score: <span id="score">0</span> / {{ questions|length }} [<span id="mark">0</span>%]</h4>
+    </div>
+
+  {% endif %}
+    <div class="text-center my-2" id="question_list">
+      <table align="center">
+        <!---- //  add hook here      // -->
+        {% for question in questions %}
+          {% if forloop.counter0|divisibleby:24 %}<tr>{% endif %}
+          <td><a name="{{ question.question_id }}"></a><button id="button-{{ question.question_id }}" onClick="jumpToQuestion('{{ question.question_id }}')" type="button" class="btn btn-outline-dark btn-sm" style="width:40px">{{ forloop.counter }}</button></td>
+          {% if forloop.last or forloop.counter|divisibleby:24 %}</tr>{% endif %}
+        {% endfor %}
+      </table>
+    </div>
+
+    <div id="question_content">
+      <table class="text-justify table table-striped px-0 py-0 rounded-0">
+        <form>
+          <tbody>
+              {% for question in questions %}
+              <tr>
+                  <td class="text-center">
+                    <!---- //  add link here      // -->
+                    <b><a href="#{{ question.question_id }}" name="question-{{ question.question_id }}">{{ forloop.counter }}.</a></b>
+                    <input type="hidden" name="question_id" value="{{ question.question_id }}" />
+                  </td>
+                  <td><span class="question">{{ question.question_text }}</span>
+                      <ul class="list-unstyled">
+                          {% for choice in choices %}
+                              {% if choice.question_id == question.question_id %}
+                            <li> 
+                                  {% if answers|answer_count:question.question_id == 1 %}
+                                <input class="form-check-input" type="radio" id="choice_id-{{ choice.choice_id }}" name="choice_id-{{ question.question_id }}" value="{{ choice.choice_id }}" 
+                                      />
+                                  {% else %}
+                                <input class="form-check-input" type="checkbox" id="choice_id-{{ choice.choice_id }}" name="choice_id-{{ question.question_id }}" value="{{ choice.choice_id }}" 
+                                    />
+                                  {% endif %}
+                                <label class="form-check-label" for="choice_id-{{ choice.choice_id }}">{{ choice.choice_text }}</label>
+                            </li>
+                              {% endif %}
+                        {% endfor %}
+                        <input type="hidden" name="answer-{{ question.question_id }}" value="{{ answers|answer_list:question.question_id|join:',' }}" />
+                      </ul>
+                  </td>
+                  <td class="align-top" align="right">
+                      <button class="btn btn-outline-primary btn-sm" id="check-{{ question.question_id }}" name="check-{{ question.question_id }}" type="button" onClick="checkAnswer('{{ question.question_id }}')"><i class="fa-regular fa-circle-question"></i></button>
+                  </td>
+              </tr>
+              <tr class="explanation" id="explanation-{{ question.question_id }}" style="display: none;">
+                <td>&nbsp;</td>
+                <td bgcolor="yellow">Explanation: {% if question.question_explanation != "" %}{{ question.question_explanation }}{% else %}-{% endif %}</td>
+                <td class="align-middle" align="right">
+                  <button type="button" class="btn btn-success btn-sm btn-fa-check"><i class="fa-solid fa-check"></i></button>
+                  <button type="button" class="btn btn-danger btn-sm btn-fa-xmark"><i class="fa-solid fa-xmark"></i></button>
+                </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+        </form>
+      </table>
+    </div>
+</div>
+
+{% endblock content %}
+{% block footer %}
+{% endblock footer %}

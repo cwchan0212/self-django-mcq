@@ -1,0 +1,60 @@
+{% extends '../../base.html' %} 
+{% load static %}
+{% load mcq_filters %}
+{% block script %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/styles.css' %}" />
+<script src="{% static '/js/script.js' %}" ></script>
+{% endblock script %} 
+{% block content %}
+<div class="content py-2 pt-4" style="margin-top: 1.8rem">
+    <div class="d-flex align-items-center justify-content-center m-auto my-2 bg-transparent text-dark">
+        <img class="header-img" src="{{ headers.image }}"/>
+        <h4>{{ headers.text }}</h4>
+    </div>
+    <form action="/data/question/action" method="post">
+        {% csrf_token %}
+        <table class="text-justify px-2 py-2 form-control">
+            <tbody>
+                <tr>
+                    <td width="10%" class="align-text-top">Section</td>
+                    <td colspan="2">
+                        <select class="form-select form-select-sm" name="section_id">
+                            {% for section in sections %} <option value="{{ section.section_id }}" {% if section.section_id == question.section.section_id %}selected{% endif %}>{{ section.section_id }}. {{ section.section_text }} {% endfor %}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="10%" class="align-text-top">Question</td>
+                    <td colspan="2">
+                        <input type="hidden" name="question_id" value="{{ question.question_id }}" />
+                        <textarea class="form-control form-control-sm" name="question_text" cols="180" rows="5">{{ question.question_text }}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="15%" class="align-text-top">Explanation {{choices|length}} {{answers|length}}</td>
+                    <td colspan="2"><textarea class="form-control form-control-sm" name="question_explanation" cols="180" rows="5">{{ question.question_explanation }}</textarea></td>
+                </tr>
+                {% for choice in choices %}
+                <tr>
+                    <td width="10%">Option {{ forloop.counter }}</td>
+                    <td>
+                        <input type="hidden" name="choice_id" value="{{ choice.choice_id }}" />
+                        <input class="form-control form-control-sm" type="text" name="choice_text" value="{{ choice.choice_text }}" maxlength="255" />
+                    </td>
+                    <td width="5%" align="center"><input class="form-check-input" type="{{ choices|choice_type:answers }}" name="answer_id" value="{{ choice.choice_id }}" {% for answer in answers %}{% if choice.choice_id == answer.choice_id %}checked{% endif %} {% endfor %} ></td>
+                </tr>
+                {% endfor %}
+                <tr class="text-center">
+                    <td width="10%"></td>
+                    <td colspan="2">
+                        <button class="btn btn-outline-dark btn-sm" type="submit" name="action" value="update" style="width: 80px"><i class="fa-regular fa-paper-plane"></i> Save</button>
+                        <button class="btn btn-outline-dark btn-sm" type="submit" name="action" value="edit" style="width: 80px"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+{% endblock content %} 
+{% block footer %} 
+{% endblock footer %}
