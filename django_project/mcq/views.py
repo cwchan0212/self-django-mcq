@@ -29,9 +29,11 @@ def section_index(request):
     context = {}
     sections = Section.all()
     headers = {
-        "text": "Section: Classify questions by sections",
+        "text": "Classify questions by sections",
         "image": "/static/img/setup-section.png"
     }
+    request.session["headers"] = headers
+
     if sections:
         context = {
             "sections": sections,
@@ -95,9 +97,11 @@ def question_index(request):
     direction = -1
     page_number = request.GET.get("page", 1)
     headers = {
-        "text": "Question: Store the question banks",
+        "text": "Store the question banks",
         "image": "/static/img/setup-question.png"
     }
+    request.session["headers"] = headers
+
     questions = Question.all_with_page(page_number, direction)
     context = {
         "questions": questions,
@@ -112,9 +116,10 @@ def question_new(request):
     sections = Section.all()
     question_list = ["answer_type", "section_id", "question_text", "choice_text", "answer_id"]
     headers = {
-        "text": "Question: Add new question",
+        "text": "Add new question",
         "image": "/static/img/question.png"
     }
+    request.session["headers"] = headers
     if sections:
         context = {
             "sections": sections,
@@ -235,9 +240,11 @@ def question_action(request):
     action = request.POST.get("action")
     question_id = request.POST.get("question_id")
     headers = {
-        "text": "Question: Modify the question",
+        "text": "Modify the questions",
         "image": "/static/img/question.png"
     }
+    request.session["headers"] = headers
+
     if request.method == "POST" and action and question_id:        
         if action == "edit":
             sections = Section.all()
@@ -320,6 +327,11 @@ def question_action(request):
 def question_search(request):
     request.session["position"] = "search"
     referral_url = request.META.get('HTTP_REFERER', None)
+    headers = {
+        "text": "Search questions by keyword",
+        "image": "/static/img/search.png"
+    }
+    request.session["headers"] = headers
 
     if referral_url is not None and "search" not in referral_url and "inputs" in request.session:
         del request.session["inputs"]
@@ -348,7 +360,8 @@ def question_search(request):
         "sections": sections,
         "section_id": section_id,
         "inputs": inputs,
-        "questions": questions
+        "questions": questions,
+        "headers": headers
     }
     return render(request, "data/question/search.html", context)
 
@@ -361,6 +374,12 @@ def quiz_index(request, section_id="1"):
         "sections": sections,
         "inputs": ""
     }
+    headers = {
+        "text": "Test your knowledge",
+        "image": "/static/img/quiz.png"
+    }
+    request.session["headers"] = headers
+
     if request.method == "POST":
         section_id = request.POST.get("section_id")
         if section_id:
@@ -416,13 +435,66 @@ def quiz_answer(request, question_id):
 ###################################################################################################
 # Study: Index
 def study_index(request):
+    
     request.session["position"] = "study"
     headers = {
-        "text": "Study: Master the knowledge ",
+        "text": "Master the knowledge ",
         "image": "/static/img/study.png"
     }
 
+    pictures = {
+        "2_1": [2, "mapofuk.jpg", "The countries that make up the UK: England, Scotland, Wales and Northern Ireland"],
+        "3_1": [3, "stonehenge-aerial.jpg", "The world heritage site of Stonehenge"],
+        "3_2": [3, "anglo-saxon-helmet.jpg", "An Anglo-Saxon helmet found at Sutton Hoo – currently on display at the British Museum"],
+        "3_3": [3, "bayeux-tapestry.jpg", "Part of the Bayeux Tapestry – the linen cloth is nearly 70 metres (230 feet) and is embroidered with coloured wool"],
+        "3_4": [3, "York-Minister-Stained-Glass.jpg", "York Minister Stained Glass"],        
+        "3_5": [3, "henry-the-eighth.jpg", "Henry VIII was king of England from 21 April 1509 until his death on 28 January 1547"],
+        "3_6": [3, "Elizabeth-I.jpg", "Elizabeth I was the younger daughter of Henry VIII"],
+        "3_7": [3, "Shakespeare.jpg", "Shakespeare is widely regarded as the greatest writer in the English language"],
+        "3_8": [3, "st-georges-cross.jpg", "St. Andrew’s Cross of Scotland"],
+        "3_9": [3, "Richard-Arkwright-carding-machine.jpg", "Richard Arkwright’s carding machine"],
+        "3_10": [3, "The-Battle-of-Trafalgar.jpg", "The Battle of Trafalgar (21 October 1805) was a naval engagement fought by the British Royal Navy against the combined fleets of the French Navy and Spanish Navy"],
+        "3_11": [3, "union-jack.jpg", "The Union Flag also known as the Union Jack"],		
+        "3_12": [3, "england-flag-300x180.jpg", "The crosses of the three countries which combined to form the Union Flag"],
+        "3_13": [3, "scotland-flag-300x180.jpg", "The crosses of the three countries which combined to form the Union Flag"],	
+        "3_14": [3, "st-patrick-flag-300x180.jpg", "The crosses of the three countries which combined to form the Union Flag"],
+        "3_15": [3, "union-jack-1-300x180.jpg", "The crosses of the three countries which combined to form the Union Flag"],
+        "3_16": [3, "wales-flag.jpg", "The official Welsh Flag"],
+        "3_17": [3, "clifton-suspension-bridge.jpg", "The Clifton suspension Bridge, designed by Isambard Kingdom Brunel, spanning the Avon Gorge"],		
+        "3_18": [3, "soldiers-trences-ww2.jpg", "Soldiers fighting in the trenches during the First World War"],
+        "3_19": [3, "winston-churchill.jpg", "Winston Churchill, best known for his leadership of the UK during the Second World War"],
+        "3_20": [3, "raf-ww2.jpg", "The Royal Air Force helped to defend Britain in the Second World War"],
+        "4_1": [4, "uk-cities.jpg", "The cities of the UK"],		
+        "4_2": [4, "westminster-abbey.jpg", "Westminster Abbey has been the coronation church since 1066 and is the final resting place of 17 monarchs"],		
+        "4_3": [4, "Christmas-Day-meal.jpg", "A typical Christmas Day meal"],		
+        "4_4": [4, "diwali-leicester.jpg", "Diwali is popularly known as the Festival of lights"],		
+        "4_5": [4, "cenotaph.jpg", "Unveiled in 1920, the Cenotaph is the centerpiece to the Remembrance Day service"],
+        "4_6": [4, "cricket.jpg", "Cricket is one of the many famous sports originating in Britain"],
+        "4_7": [4, "royal-albert-hall.jpg", "The Royal Albert Hall is the venue for the Last Night of the Proms"],
+        "4_8": [4, "tate-modern.jpg", "Tate modern is based in the former Bank side Power Station in central London"],
+        "4_9": [4, "big-ben.jpg", "Big Ben"],
+        "4_10": [4, "eden-project.jpg", "The Eden Project"],
+        "4_11": [4, "edinburgh-castle.jpg", "Edinburgh Castle"],		
+        "4_12": [4, "giants-causeway.jpg", "The Giant’s Causeway"],
+        "4_13": [4, "loch-lomond.jpg", "Loch Lomond and the Trossachs National Park"],
+        "4_14": [4, "london-eye.jpg", "London Eye"],
+        "4_15": [4, "snowdonia.jpg", "Snowdonia"],
+        "4_16": [4, "tower-of-london.jpg", "The Tower of London"],
+        "4_17": [4, "lake-district.jpg", "The Lake District"],	
+
+        "5_1": [5, "queen-of-england.jpg", "Queen Elizabeth II, head of state of the UK"],
+        "5_2": [5, "houses-of-parliament.jpg", "The Houses of Parliament, one of the centres of political life in the UK and a World Heritage Site"],
+        "5_3": [5, "The-Welsh-Assembly-building.jpg", "The Welsh Assembly building, opened in March 2006"],
+        "5_4": [5, "Scottish-Parliament-Building.jpg", "The Scottish Parliament Building, opened in October 2004"],
+        "5_5": [5, "stormont.jpg", "The Northern Ireland Building, known as Stormont"],
+        "5_6": [5, "english-police.jpg", "The police in the UK protect life and property, prevent disturbances, and prevent and detect crime"],	
+        "5_7": [5, "homework.jpg", "Parents often help in classrooms, by supporting activities or listening to children read"],	
+        "5_8": [5, "volunteer-work.jpg", "Voluntary organization work to improve the lives of people, animals and environment in many different ways"],	
+    }
+
+    request.session["headers"] = headers
     context = {
-        "headers": headers
+        "headers": headers,
+        "pictures": pictures,
     }
     return render(request, "data/study/index.html", context)

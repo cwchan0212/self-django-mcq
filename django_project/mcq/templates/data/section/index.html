@@ -7,13 +7,9 @@
 {% block content %}
 
 <div class="content py-2 pt-4" style="margin-top: 1.8rem">
-    <div class="d-flex align-items-center justify-content-center m-auto my-2 bg-transparent text-dark">
-        <img class="header-img" src="{{ headers.image }}"/>
-        <h4>{{ headers.text }}</h4>
-    </div>
 
     {% if messages %}
-    <div class="container px-0 py-0">
+    <div class="container pt-4 px-0 py-0">
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }}" role="alert">
                 {{ message }}
@@ -22,7 +18,7 @@
     </div>
     {% endif %}
 
-    <table class="text-justify table table-striped px-0 py-0 rounded-0">
+    <table class="text-justify table table-striped mt-2 px-0 py-0 rounded-0">
         <thead>
             <tr class="bg-secondary text-center text-white rounded-top">
                 <th width="5%"><button class="btn btn-light btn-sm px-0 py-0" style="width:24px; height:24px" disabled><i class="fa-regular fa-note-sticky fa-xs"></i></button></th>

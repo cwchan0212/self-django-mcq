@@ -1,3 +1,7 @@
+html {
+    font-size: 0.9rem;
+}
+
 td {
     font-size: 0.85rem;
     padding: 2px;
@@ -25,10 +29,11 @@ label {
 }
 
 .header-img {
-    width: 80px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    border: 4px solid #555;
-    margin: 0px 20px 0px 0px;
+    border: 2px solid #555;
+    margin: 0px 0px 0px 0px;
 }
 
 #header {
@@ -61,4 +66,57 @@ label.form-check-label:focus,
 .dropdown-item:hover {
     background-color: #6c757d;
     color: white;
+}
+
+
+
+/* .table_picture, .map_picture {
+    margin: auto;
+  }
+  
+  .table_picture img, .map_picture img {
+    width: 50%;
+  }
+  
+  .table_picture td {
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+  } */
+
+.picture_source {
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    width: 600px;
+}
+
+.picture_source img {
+    width: 600px;
+}
+
+.picture_text {
+    text-align: center;
+    width: 600px;
+    padding: 5px 10px 5px 10px;
+    margin: 0px auto 10px auto;
+    color: white;
+    background-color: black;
+}
+
+.picture_source_sm img {
+    width: 120px;
+}
+
+.picture_source_sm img {
+    width: 120px;
+}
+
+.picture_text_sm {
+    text-align: center;
+    width: 120px;
+    padding: 5px 10px 5px 10px;
+    margin: 0px auto 10px auto;
+    color: white;
+    background-color: black;
 }

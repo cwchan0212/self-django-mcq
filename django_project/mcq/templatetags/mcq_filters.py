@@ -38,3 +38,34 @@ def choice_type(choices, answers):
         return "radio"
     else:
         return "checkbox"
+
+@register.filter
+def picture_source(pictures, article_index):
+    picture_path = ""
+    if pictures:
+        picture_path = f"/static/img/{pictures[article_index][0]}/{pictures[article_index][1]}"
+    return picture_path
+
+@register.filter
+def picture_text(pictures, article_index):
+    picture_alt = ""
+    if pictures:
+        picture_alt = f"{pictures[article_index][2]}"
+    return picture_alt
+
+@register.filter
+def picture_grid(pictures, article_index):
+    picture_html = ""
+
+    if pictures and article_index:
+        picture_html = f'''
+            <div class="container_picture">
+                <div class="picture_source">
+                    <img alt="{picture_text(pictures, article_index)}" title="{picture_text(pictures, article_index)}" src="{picture_source(pictures, article_index)}">
+                </div>
+                <div class="picture_text">
+                    {picture_text(pictures, article_index)}
+                </div>
+            </div>
+        '''   
+    return picture_html

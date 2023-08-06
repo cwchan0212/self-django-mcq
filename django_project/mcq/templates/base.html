@@ -60,6 +60,12 @@
                 </li>
             </ul>
         </div>
+        <div class="text-end">
+            <div class="m-auto my-0 bg-transparent text-light">                
+                <span>{{ request.session.headers.text }}</span>
+                <img class="header-img" src="{{ request.session.headers.image }}"/> 
+              </div>
+        </div>
     </nav>
 
     {% block content %}

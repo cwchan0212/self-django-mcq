@@ -6,13 +6,13 @@
 {% endblock script %} 
 {% block content %}
 <div class="content py-2 pt-4" style="margin-top: 1.8rem">
-    <div class="d-flex align-items-center justify-content-center m-auto my-2 bg-transparent text-dark">
+    <!-- <div class="d-flex align-items-center justify-content-center m-auto my-2 bg-transparent text-dark">
         <img class="header-img" src="{{ headers.image }}"/>
         <h4>{{ headers.text }}</h4>
-    </div>
+    </div> -->
 
     {% if messages %}
-    <div class="container px-0 py-0">
+    <div class="container pt-4 px-0 py-0">
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }}" role="alert">
                 {{ message }}
@@ -22,8 +22,8 @@
     {% endif %}
 
     {% if questions|length > 0 %}
-    <div class="mt-0 px-0">
-        <div class="d-flex justify-content-center py-1">
+    <div class="mt-2 px-0">
+        <div class="d-flex justify-content-start py-1">
             <button class="btn btn-dark btn-sm border-0 px-0" disabled style="width: 120px; margin-right: 10px">
                 <i class="fa-solid fa-file-lines"></i>
                 Total:  {{ questions.paginator.count }}
@@ -33,7 +33,7 @@
                  {{ questions.start_index }} - {{ questions.end_index }}
             </button>
         </div>
-        <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-start">
             <form method="get">
             <nav aria-label="Page navigation">
                 <ul class="pagination pagination-sm">

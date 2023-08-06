@@ -7,14 +7,12 @@
 {% endblock script %} 
 {% block content %}
 <div class="content py-2 pt-4" style="margin-top: 1.8rem">
-    <div class="d-flex align-items-center justify-content-center m-auto my-2 bg-transparent text-dark">
-        <img class="header-img" src="{{ headers.image }}"/>
-        <h4>{{ headers.text }}</h4>
-    </div>
     {% if messages %} 
+    <div class="container pt-4 px-0 py-0">
         {% for message in messages %}
         <div class="container alert alert-danger">{{ message }}</div>
         {% endfor %} 
+    </div>
     {% endif %}
     <form action="/data/question/add" method="post">
         {% csrf_token %}

@@ -1,0 +1,78 @@
+.list-unstyled {
+    margin-left: -10px;
+    font-size: 0.9rem;
+}
+
+.nav-sub-list {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+p {
+    text-align: justify;
+}
+
+.chapter,
+.chapter:visited {
+    color: black;
+    font-weight: 600;
+}
+
+.section,
+.section:visited {
+    color: navy;
+    font-weight: 400;
+}
+
+.paragraph {
+    text-align: justify;
+    /* line-height: 1.2rem; */
+    padding: 5px 0px 5px 0px;
+}
+
+.subheader {
+    padding: 10px 0px 0px 0px;
+}
+
+.quote {
+    display: flex;
+    flex-direction: column;
+    text-align: justify;
+    white-space: pre-line;
+    margin: 10px 0px 10px 0px;
+    padding: 0px 10px 0px 10px;
+    border-left: 5px solid darkblue;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.subquote {
+    font-weight: 400;
+    color: darkslategray;
+    margin-top: -20px;
+}
+
+.chapter-header {
+    background: rgb(108, 117, 125);
+    background: linear-gradient(90deg, rgba(108, 117, 125, 1) 0%, rgba(248, 249, 250, 1) 100%);
+    color: #fff;
+    margin-left: -20px;
+    padding-left: 20px;
+}
+
+.understand-area {
+    background-color: whitesmoke;
+    padding: 0px 0px 0px 5px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 2px solid lightsteelblue;
+}
+
+.understand-area ul,
+.understand-area li {
+    margin-bottom: 1px;
+}
+
+.seperator-one {
+    border: 1px solid black;
+}
