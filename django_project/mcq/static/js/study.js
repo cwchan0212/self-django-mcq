@@ -7,6 +7,6 @@ function toggleSubList(chapterId) {
     }
     let presetName = document.querySelector('a[name="' + chapterId + '"]');
     if (presetName) {
-      presetName.scrollIntoView();
+      presetName.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest"  });
     }
   }
