@@ -9,7 +9,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Section, Question, Choice, Answer
+from .models import Section, Question, Choice, Answer, Picture
 
 # Create your views here.
 
@@ -431,6 +431,143 @@ def quiz_answer(request, question_id):
         "answers": answers
     }    
     return JsonResponse(response)
+
+###################################################################################################
+# Picture: Index
+def picture_index(request):
+    request.session["position"] = "picture"
+    sections = Section.all()
+    headers = {
+        "text": "Manage media library",
+        "image": "/static/img/quiz.png"
+    }
+    request.session["headers"] = headers
+    context = {
+        "sections": sections,
+        "headers": headers,
+    }
+
+    if request.method == "GET":
+        pictures = Picture.all()        
+        context["pictures"] = pictures
+
+    ############################################
+
+
+
+    elif request.method == "POST":
+
+        if request.POST.get("picture_mode") == "add":
+            section_id = request.POST.get("section_id")
+            prefix = request.POST.get("prefix").strip()
+            description = request.POST.get("description").strip()
+            inputs = {
+                "section_id": section_id,
+                "prefix": prefix,
+                "description": description,
+            }
+            context = {
+                "sections": sections,
+                "headers": headers,
+                "inputs": inputs
+            }
+            
+            if not prefix: 
+                messages.error(request, "Please enter the prefix.")
+
+            if not description:
+                messages.error(request, "Please enter the description.")
+            
+            if not request.FILES:
+                messages.error(request, "Please upload the picture.")
+            else: 
+                picture_file = request.FILES['picture']
+                picture_filename = picture_file.name
+                picture_blob = picture_file.read()
+                picture_size = picture_file.size
+
+            message_list = list(messages.get_messages(request))
+
+            if not message_list:      
+                section = Section.id(inputs["section_id"])
+                picture_dictionary = {
+                    "picture_prefix": inputs["prefix"],
+                    "picture_filename": picture_filename,
+                    "picture_description": inputs["description"],
+                    "picture_blob": picture_blob,
+                    "picture_size": picture_size,
+                    "section": section
+                }
+
+                picture_id = Picture.insert(picture_dictionary)
+                if picture_id:
+                    pictures = Picture.all()
+                    sections = Section.all()
+                    context = {
+                        "pictures": pictures,
+                        "sections": sections,
+                    }
+                    messages.success(request, f"The picture is CREATED successfully. [#{picture_id}]")
+                    return redirect("/data/picture")  
+            else:
+                context = {
+                    "sections": Section.all(),
+                    "pictures": Picture.all(),
+                    "inputs": inputs,
+                }        
+
+        elif request.POST.get("picture_mode") == "update": 
+            picture_id = request.POST.get("picture_id")
+            section_id = request.POST.get("section_id")
+            prefix = request.POST.get("prefix").strip()
+            description = request.POST.get("description").strip()
+
+            picture_dictionary = {
+                "picture_prefix": prefix,
+                "picture_description": description,
+                "section": Section.id(section_id),
+            }
+
+            if section_id and picture_id and prefix and description:
+                row_affected = Picture.update(picture_id, picture_dictionary)
+                context = {
+                    "sections": Section.all(),
+                    "pictures": Picture.all(),
+                }
+                messages.success(request, f"The picture is UPDATED successfully. [#{picture_id}]")
+
+            else:
+                if prefix is None:
+                    messages.error(request, f"Please enter the prefix.")
+                
+                if description is None:
+                    messages.error(request, f"Please enter the description.")
+
+
+        elif request.POST.get("picture_mode") == "delete":
+            picture_id = request.POST.get("picture_id")
+            if picture_id:
+                row_affected = Picture.delete(picture_id)
+                pictures = Picture.all()
+                context = {
+                    "sections": sections,
+                    "pictures": pictures,
+                }
+                messages.success(request, f"The picture is DELETED successfully. [#{picture_id}]")
+        
+
+    return render(request, "data/picture/index.html", context)
+###################################################################################################
+# Picture: Show
+def picture_show(request):
+    prefix = "2_1"
+    picture = Picture.one(prefix)
+    context = {
+        "picture": picture,
+    }
+
+    return render(request, "data/picture/show.html", context)
+
 
 ###################################################################################################
 # Study: Index

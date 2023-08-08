@@ -42,12 +42,13 @@
                 </li> -->
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link{% if request.session.position == 'section' or request.session.position == 'question' %} active{% endif %} dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link{% if request.session.position == 'section' or request.session.position == 'question' or request.session.position == 'picture' %} active{% endif %} dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Setup
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                       <a class="dropdown-item" href="/data/section">Section</a>
                       <a class="dropdown-item" href="/data/question">Question</a>
+                      <a class="dropdown-item" href="/data/picture">Picture</a>
                     </div>
                   </li>
 

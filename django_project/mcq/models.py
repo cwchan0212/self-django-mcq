@@ -172,3 +172,38 @@ class Answer(models.Model):
         question = Question.objects.filter(question_id = question_id).values('question_explanation').first()
         answers = Answer.objects.filter(question_id = question_id).values_list('choice_id', flat=True)
         return question["question_explanation"], list(answers)
+
+###################################################################################################
+# Model "Picture"
+class Picture(models.Model):
+    picture_id = models.IntegerField(null = False, primary_key = True)
+    picture_prefix =  models.CharField(null = False, max_length = 255)
+    picture_filename =  models.CharField(null = False, max_length = 500)
+    picture_description = models.CharField(null = False, max_length = 1000)
+    picture_blob = models.BinaryField()
+    picture_size = models.PositiveIntegerField()
+    section = models.ForeignKey(Section, on_delete = models.CASCADE)
+    
+    def insert(picture_dictionary):
+        picture = Picture.objects.create(**picture_dictionary)
+        picture_id = Picture.objects.last().picture_id
+        return picture_id
+
+    def update(picture_id, picture_dictionary):
+        row_affected = Picture.objects.filter(picture_id = picture_id).update(**picture_dictionary)
+        return row_affected
+
+    def delete(picture_id):
+        row_affected = Picture.objects.filter(picture_id = picture_id).delete()
+        return row_affected
+
+    def all():
+        pictures = Picture.objects.select_related("section").all().order_by('-picture_id')
+        return pictures
+
+
+    def one(picture_prefix):
+        picture = Picture.objects.get(picture_prefix=picture_prefix)
+        print(picture)
+        return picture
+        

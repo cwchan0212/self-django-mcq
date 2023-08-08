@@ -1,5 +1,5 @@
 from django import template
-import math
+import math, base64
 
 register = template.Library()
 
@@ -22,6 +22,16 @@ def modulo(dividend, divisor):
 @register.filter
 def quotient(dividend, divisor):
     return math.ceil(dividend / divisor)
+
+@register.filter
+def stringToInteger(string):
+    num = 0 
+    try:
+        num = int(string)
+    except:
+        return -1
+    return num
+
 
 @register.filter
 def replace_string(string, word1, word2=None):
@@ -69,3 +79,8 @@ def picture_grid(pictures, article_index):
             </div>
         '''   
     return picture_html
+
+
+@register.filter
+def encode_base64(binary_data):
+    return base64.b64encode(binary_data).decode('utf-8')

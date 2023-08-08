@@ -1,0 +1,128 @@
+{% extends '../../base.html' %}
+{% load static %}
+{% load mcq_filters %}
+{% block script %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/styles.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static '/css/quiz.css' %}" />
+<script type="text/javascript" src="{% static '/js/script.js' %}"></script>
+{% endblock script %}
+{% block content %}
+
+<script type="text/javascript" src="{% static '/js/quiz.js' %}"></script>
+<!-- template.html -->
+
+<!-- Add this in the <head> section -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+<!-- Add this at the end of the <body> section -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("[data-fancybox]").fancybox({
+            loop: true, // Enable looping through the gallery
+            thumbs: {
+                autoStart: true, // Show thumbs by default
+            },
+        });
+    });
+</script>
+<!-- template.html (continued) -->
+
+<style>
+    .preview-button {
+        width: 32px;
+        height: 32px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center center;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+
+<div class="content py-2 pt-4" style="margin-top: 1.8rem">
+
+    {% if messages %}
+    <div class="container pt-4 px-0 py-0">
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <table class="text-justify table table-striped mt-2 px-0 py-0 rounded-0">
+        <thead>
+            <tr class="bg-secondary text-center text-white rounded-top">
+                <th width="5%"><button class="btn btn-light btn-sm px-0 py-0" style="width:24px; height:24px" disabled><i class="fa-regular fa-note-sticky fa-xs"></i></button></th>
+                <th width="20%">Section</th>
+                <th width="8%">Prefix</th>
+                <th>Description</th>
+                <th width="15%" colspan="2">Picture</th>
+                <th width="10%" class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <form action="/data/picture" method="post" enctype="multipart/form-data"> {% csrf_token %}
+                {% csrf_token %}
+                <tr class="text-center align-middle">
+                    <td><i class="fa-solid fa-hashtag"></i></td>
+                    <td>
+                        <select class="form-select form-select-sm" name="section_id">
+                            {% for section in sections %}
+                                {% if section.section_id|stringToInteger <= 5 %} <option value="{{ section.section_id }}" {% if section.section_id|stringToInteger == inputs.section_id|stringToInteger %}selected{% endif %}>
+                                    {{ section.section_id }}. {{ section.section_text }}
+                                {% endif %}
+                            {% endfor %}
+                                </option>
+                        </select>
+                    </td>
+                    <td><input class="form-control form-control-sm" type="text" name="prefix" value="{{ inputs.prefix }}"></td>
+                    <td><input class="form-control form-control-sm" type="text" name="description" value="{{ inputs.description }}"></td>
+                    <td colspan="2"><input class="form-control form-control-sm" type="file" name="picture"></td>
+                    <td><button class="btn btn-outline-dark btn-sm" type="submit" name="picture_mode" value="add" class="form-control form-control-sm"><i class="fa-regular fa-square-plus"></i></button></td>
+                </tr>
+            </form>
+            {% for picture in pictures %}
+            <form action="/data/picture" method="post">
+                {% csrf_token %}
+                <tr class="text-center align-middle">
+                    <td>{{ picture.picture_id }}</td>
+                    <td>
+                        <input type="hidden" name="picture_id" value="{{ picture.picture_id }}">
+                        <select class="form-select form-select-sm" name="section_id">
+                            {% for section in sections %}
+                            {% if section.section_id|stringToInteger <= 5 %} <option value="{{ section.section_id }}" {% if section.section_id|stringToInteger == picture.section.section_id|stringToInteger %}selected{% endif %}>{{ section.section_id }}. {{ section.section_text }}
+                                {% endif %}
+                                {% endfor %}
+                                </option>
+                        </select>
+                    </td>
+                    <td><input class="form-control form-control-sm" type="text" name="prefix" value="{{ picture.picture_prefix }}"></td>
+                    <td><input class="form-control form-control-sm" type="text" name="description" value="{{ picture.picture_description }}"></td>
+                    <td class="text-center">
+                        <a href="data:image/png;base64,{{ picture.picture_blob|encode_base64 }}" 
+                            data-fancybox="gallery" data-caption="{{ picture.picture_description }}">
+                            <img src="data:image/png;base64,{{ picture.picture_blob|encode_base64  }}" width="24" 
+                                alt="{{ picture.picture_filename }}" title="{{ picture.picture_filename }}">
+                        </a>
+                    </td>
+                    <td class="text-start">
+                        {{ picture.picture_filename }}
+                    </td>
+                    <td align="center">
+                        <button class="btn btn-outline-dark btn-sm" type="submit" name="picture_mode" value="update" class="form-control form-control-sm"><i class="fa-regular fa-pen-to-square"></i></button>
+                        <button class="btn btn-outline-dark btn-sm" type="submit" name="picture_mode" value="delete" class="form-control form-control-sm"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            </form>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
+{% block footer %}
+{% endblock footer %}

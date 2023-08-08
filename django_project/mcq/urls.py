@@ -19,6 +19,10 @@ urlpatterns = [
     path("data/question/action", views.question_action, name="question_action"),
     path("data/question/search", views.question_search, name="question_search"),
 
+    path("data/picture", views.picture_index, name="picture_index"),
+    path("data/picture/show", views.picture_show, name="picture_show"),
+
+
     path("data/quiz", views.quiz_index, name="quiz_index"),
     path("data/quiz/mode", views.quiz_mode, name="quiz_mode"),
     path("data/quiz/<int:question_id>", views.quiz_answer, name="quiz_answer"),
