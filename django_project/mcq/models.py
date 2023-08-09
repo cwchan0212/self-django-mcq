@@ -201,9 +201,20 @@ class Picture(models.Model):
         pictures = Picture.objects.select_related("section").all().order_by('-picture_id')
         return pictures
 
-
     def one(picture_prefix):
         picture = Picture.objects.get(picture_prefix=picture_prefix)
         print(picture)
         return picture
         
+    def all_with_page(page_number, order_way=0):
+        number_of_page = 12
+        if order_way:
+            pictures = Picture.objects.select_related("section").all().order_by('-picture_id')
+        else:
+            pictures = Picture.objects.select_related("section").all().order_by('picture_id')
+        paginator = Paginator(pictures, number_of_page)
+        try:
+            page_object = paginator.page(page_number)
+        except:
+            page_object = paginator.page(paginator.num_pages)        
+        return page_object

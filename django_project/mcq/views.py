@@ -448,12 +448,38 @@ def picture_index(request):
     }
 
     if request.method == "GET":
-        pictures = Picture.all()        
-        context["pictures"] = pictures
+        # pictures = Picture.all()        
+        # context["pictures"] = pictures
 
+        pictures = None
+        direction = -1
+        page_number = request.GET.get("page", 1)
+    
+        pictures = Picture.all_with_page(page_number, direction)
+        context["pictures"] = pictures
+        
+        return render(request, "data/picture/index.html", context)
     ############################################
 
+    
 
+# def question_index(request):
+#     request.session["position"] = "question"
+#     questions = None
+#     direction = -1
+#     page_number = request.GET.get("page", 1)
+#     headers = {
+#         "text": "Store the question banks",
+#         "image": "/static/img/setup-question.png"
+#     }
+#     request.session["headers"] = headers
+
+#     questions = Question.all_with_page(page_number, direction)
+#     context = {
+#         "questions": questions,
+#         "headers": headers,
+#     }
+#     return render(request, "data/question/index.html", context)
 
     elif request.method == "POST":
 
@@ -536,6 +562,7 @@ def picture_index(request):
                 }
                 messages.success(request, f"The picture is UPDATED successfully. [#{picture_id}]")
 
+
             else:
                 if prefix is None:
                     messages.error(request, f"Please enter the prefix.")
@@ -555,8 +582,16 @@ def picture_index(request):
                 }
                 messages.success(request, f"The picture is DELETED successfully. [#{picture_id}]")
         
+        referral_url = request.META.get('HTTP_REFERER', None)
+        suffix_referrer = referral_url.split("/")[-1]
+        redirect_url = "/data/picture"
+        # print("referral", suffix_referrer, "?page=" in suffix_referrer)
 
-    return render(request, "data/picture/index.html", context)
+        if "?page=" in suffix_referrer:
+            redirect_url = f"/data/{suffix_referrer}"
+
+        return redirect(redirect_url)
+        # return render(request, "data/picture/index.html", context)
 ###################################################################################################
 # Picture: Show
 def picture_show(request):
