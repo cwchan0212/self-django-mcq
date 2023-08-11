@@ -80,7 +80,14 @@ def picture_grid(pictures, article_index):
         '''   
     return picture_html
 
-
 @register.filter
 def encode_base64(binary_data):
     return base64.b64encode(binary_data).decode('utf-8')
+
+@register.filter
+def picture_box(pictures, picture_id):
+
+    for picture in pictures:
+        if picture.picture_id == picture_id:
+            print(picture)
+    
