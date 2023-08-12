@@ -1,4 +1,5 @@
 from django import template
+from django.utils.safestring import mark_safe
 import math, base64
 
 register = template.Library()
@@ -86,8 +87,21 @@ def encode_base64(binary_data):
 
 @register.filter
 def picture_box(pictures, picture_id):
-
+    picture_html = ""
+    
     for picture in pictures:
         if picture.picture_id == picture_id:
-            print(picture)
-    
+            #print(picture)
+
+            picture_html = f'''
+                <div class="container_picture">
+                    <div class="picture_source">
+                        <img alt="{ picture.picture_description }" title="{ picture.picture_description }" 
+                            src="data:image/png;base64,{ encode_base64(picture.picture_blob) }" />
+                    </div>
+                    <div class="picture_text">
+                        { picture.picture_description }
+                    </div>
+                </div>
+            '''
+            return picture_html
