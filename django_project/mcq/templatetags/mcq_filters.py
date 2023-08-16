@@ -41,6 +41,11 @@ def replace_string(string, word1, word2=None):
     return string.replace(word1, word2)
 
 @register.filter
+def row_height(a, b):
+    print(a, b, type(a), type(b))
+    return (a - int(b))
+
+@register.filter
 def choice_type(choices, answers):
     true_choice = choices.filter(choice_text="True").exists()
     false_choice = choices.filter(choice_text="False").exists()
@@ -51,17 +56,24 @@ def choice_type(choices, answers):
         return "checkbox"
 
 @register.filter
-def picture_source(pictures, article_index):
+def picture_source(pictures, picture_id):
     picture_path = ""
     if pictures:
-        picture_path = f"/static/img/{pictures[article_index][0]}/{pictures[article_index][1]}"
+        for picture in pictures:
+            if picture.picture_id == picture_id:
+                picture_path = f"data:image/png;base64,{ encode_base64(picture.picture_blob) }"
+                return picture_path
+        #picture_path = f"/static/img/{pictures[article_index][0]}/{pictures[article_index][1]}"
     return picture_path
 
 @register.filter
-def picture_text(pictures, article_index):
+def picture_text(pictures, picture_id):
     picture_alt = ""
     if pictures:
-        picture_alt = f"{pictures[article_index][2]}"
+        for picture in pictures:
+            if picture.picture_id == picture_id:
+                picture_alt = f"{picture.picture_description}"
+                return picture_alt
     return picture_alt
 
 @register.filter

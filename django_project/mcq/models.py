@@ -116,8 +116,8 @@ class Question(models.Model):
             questions = Question.objects.select_related("section").filter(question_text__icontains = keyword)  
         return questions
 
-    def search_by_keyword_with_page(section_id, keyword, page_number):
-        number_of_page = 25
+    def search_by_keyword_with_page(section_id, keyword, page_number, number_of_items=12):
+        # number_of_items = 12
         if section_id != "all":
             questions = Question.objects.select_related("section").filter(
                 section_id = section_id,
@@ -127,7 +127,7 @@ class Question(models.Model):
             questions = Question.objects.select_related("section").filter(
                 question_text__icontains = keyword
             ).order_by("question_id")
-        paginator = Paginator(questions, number_of_page)
+        paginator = Paginator(questions, number_of_items)
         try:
             page_object = paginator.page(page_number) 
         except:
@@ -207,7 +207,7 @@ class Picture(models.Model):
         return picture
         
     def all_with_page(page_number, order_way=0):
-        number_of_page = 12
+        number_of_page = 50
         if order_way:
             pictures = Picture.objects.select_related("section").all().order_by('-picture_id')
         else:

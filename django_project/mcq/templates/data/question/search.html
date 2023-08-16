@@ -8,11 +8,28 @@
 {% block content %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js" integrity="sha512-8Z5++K1rB3U+USaLKG6oO8uWWBhdYsM3hmdirnOEWp8h2B1aOikj5zBzlXs8QOrvY9OxEnD2QDkbSKKpfqcIWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<div class="content py-2 pt-4" style="margin-top: 1.8rem">
-    <!-- <div class="d-flex align-items-center justify-content-center m-auto my-2 bg-transparent text-dark">
-        <img class="header-img" src="{% static '/img/search.png' %}"/> 
-        <h4>Search: Search questions by keyword</h4>
-    </div> -->
+<script>
+  // Wait for the document to be fully loaded before accessing elements
+  document.addEventListener("DOMContentLoaded", function() {
+    // Get the table cell element
+    var cell = document.getElementById("targetCell");
+
+    if (cell) {
+      // Get the computed style of the cell
+      var cellStyle = window.getComputedStyle(cell);
+
+      // Get the height of the cell
+      var cellHeight = cellStyle.height;
+
+      console.log("Height of the cell:", cellHeight);
+    } else {
+      console.log("Cell not found");
+    }
+  });
+    
+</script>
+
+<div class="content py-0 pt-4" style="margin-top: 1.8rem">
     <div class="text-center rounded bg-dark text-white px-2 py-2"> 
         <form action="/data/question/search" method="post">{% csrf_token %}
             <div class="input-group">      
@@ -85,7 +102,7 @@
                 {% for question in questions %}
                 <form action="/data/question/action" method="post">{% csrf_token %}
                     <tr>
-                        <td class="text-center">{{ forloop.counter }}.</td>
+                        <td id="targetCell" class="text-center">{{ forloop.counter }}.</td>
                         <td>{{ question.section_id }}. {{ question.section.section_text }} </td>
                         <td>{{ question.question_text }}</td>
                         <td class="text-center">
@@ -99,8 +116,36 @@
             </tbody>
         </table>
     </div>
+
+    {% else %}
+
+        <div class="content py-0 pt-0" >
+            <div class="jumbotron jumbotron-fluid text-white text-center jumbotron-bg2">
+                <div class="banner bg-dark text-light p-5">
+                    <h1 class="display-4">Search for Questions</h1>                   
+                    <hr class="my-4">
+                    <p class="lead text-secondary">Explore our extensive question bank to prepare for your test</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer bg-dark text-white text-center py-3 d-flex align-items-center">
+            <p class="flex-grow-1 mb-0">This project is for demonstration and educational purposes.</p>
+            <div>
+                <a href="https://www.linkedin.com/in/cwchanst/" target="_blank" class="text-white mx-2">
+                    <i class="fab fa-linkedin fa-lg"></i>
+                </a>
+                <a href="https://github.com/cwchan0212" target="_blank" class="text-white mx-2">
+                    <i class="fab fa-github fa-lg"></i>
+                </a>
+            </div>
+        </footer> 
+
+
+
     {% endif %}
 </div>
 {% endblock content %}
+
 {% block footer %}
 {% endblock footer %}

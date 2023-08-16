@@ -6,7 +6,7 @@
 <script src="{% static '/js/script.js' %}" ></script>
 {% endblock script %} 
 {% block content %}
-<div class="content py-2 pt-4" style="margin-top: 1.8rem">
+<div class="content py-0 pt-4" style="margin-top: 1.8rem">
     {% if messages %} 
     <div class="container pt-4 px-0 py-0">
         {% for message in messages %}
@@ -198,5 +198,6 @@
     </form>
 </div>
 {% endblock content %} 
-{% block footer %} 
+
+{% block footer %}
 {% endblock footer %}

@@ -57,22 +57,38 @@ p {
     background: linear-gradient(90deg, rgba(108, 117, 125, 1) 0%, rgba(248, 249, 250, 1) 100%);
     color: #fff;
     margin-left: -20px;
-    padding-left: 20px;
+    padding: 5px 0px 2px 20px;
 }
 
 .understand-area {
     background-color: whitesmoke;
-    padding: 0px 0px 0px 5px;
-    margin-bottom: 20px;
+    padding: 10px 10px 10px 10px;
+    /* margin-bottom: 20px; */
+    border-radius: 5px;
+    border: 2px solid lightsteelblue;
+}
+
+.understand-area1 {
+    background-color: whitesmoke;
+    padding: 10px 10px 10px 10px;
+    margin-top: 10px;
     border-radius: 5px;
     border: 2px solid lightsteelblue;
 }
 
 .understand-area ul,
-.understand-area li {
+.understand-area li,
+.understand-area1 ul,
+.understand-area1 li {
     margin-bottom: 1px;
 }
 
 .seperator-one {
     border: 1px solid black;
 }
+
+.seperator-two {
+    border: 10px solid transparent;
+}
+
+

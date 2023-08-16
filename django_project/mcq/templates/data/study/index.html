@@ -1,27 +1,38 @@
 {% extends '../../base.html' %} 
 {% load static %} 
 {% load mcq_filters %} 
+
 {% block script %}
 <link rel="stylesheet" type="text/css" href="{% static '/css/styles.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static '/css/quiz.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static '/css/study.css' %}" />
 <script type="text/javascript" src="{% static '/js/script.js' %}"></script>
-{% endblock script %} {% block content %}
+{% endblock script %} 
+
+{% block content %}
 <script type="text/javascript" src="{% static '/js/quiz.js' %}"></script>
 <script type="text/javascript" src="{% static '/js/study.js' %}"></script>
 
-<div class="content py-2 pt-4" style="margin-top: 1.8rem">
+<div class="content py-0 pt-4" style="margin-top: 1.8rem">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-2 px-1 bg-light position-fixed" id="sticky-sidebar">
-              {% include "./sidebar.html" %}
-            </div>
-
-            <div class="col-10 offset-2 mt-2" id="main">
-              {% include "./main.html" %}
-            </div>
+            <div class="col-2 px-1 bg-light position-fixed" id="sticky-sidebar">{% include "./sidebar.html" %}</div>
+            <div class="col-10 offset-2 mt-2" id="main">{% include "./main.html" %}</div>
         </div>
     </div>
 </div>
+{% endblock content %} 
 
-{% endblock content %} {% block footer %} {% endblock footer %}
+{% block footer %}
+<footer class="footer bg-dark text-white text-center py-3 d-flex align-items-center" style="margin-top: 1rem">
+    <p class="flex-grow-1 mb-0" style="padding-left: 45%">This project is for demonstration and educational purposes.</p>
+    <div>
+        <a href="https://www.linkedin.com/in/cwchanst/" target="_blank" class="text-white mx-2">
+            <i class="fab fa-linkedin fa-lg"></i>
+        </a>
+        <a href="https://github.com/cwchan0212" target="_blank" class="text-white mx-2">
+            <i class="fab fa-github fa-lg"></i>
+        </a>
+    </div>
+</footer>
+{% endblock footer %}

@@ -1,80 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-{% load static %}
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block title %}
-    <title>Life in the UK Test</title>
-    {% endblock title %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.bundle.min.js" integrity="sha512-ToL6UYWePxjhDQKNioSi4AyJ5KkRxY+F1+Fi7Jgh0Hp5Kk2/s8FD7zusJDdonfe5B00Qw+B8taXxF6CFLnqNCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    {% block script %}
-    <link rel="stylesheet" type="text/css" href="{% static '/css/styles.css' %}" />
-    {% endblock script %}
-</head>
-<body>
-    <script>
-        function quizModeChange() {
-            let quiz_mode_form = document.getElementById("quiz_mode");
-            quiz_mode_form.submit();
-        }
-    </script>
-    
-    <nav class="navbar navbar-expand-sm fixed-top navbar-dark bg-dark px-4">
-        <a class="navbar-brand"><i class="fa-solid fa-compass-drafting"></i></a>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link{% if request.session.position == 'study' %} active{% endif %}" href="/data/study">Study</a>
-                </li>
-                <!-- <li class="nav-item">
+    {% load static %}
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {% block title %}
+        <title>Life in the UK Test</title>
+        {% endblock title %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.bundle.min.js" integrity="sha512-ToL6UYWePxjhDQKNioSi4AyJ5KkRxY+F1+Fi7Jgh0Hp5Kk2/s8FD7zusJDdonfe5B00Qw+B8taXxF6CFLnqNCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link rel="stylesheet" type="text/css" href="{% static '/css/styles.css' %}" />
+        <script type="text/javascript" src="{% static '/js/script.js' %}"></script>
+        {% block script %} {% endblock script %}
+    </head>
+
+    <body>
+        <script>
+            function quizModeChange() {
+                let quiz_mode_form = document.getElementById("quiz_mode");
+                quiz_mode_form.submit();
+            }
+        </script>
+
+        <nav class="navbar navbar-expand-sm fixed-top navbar-dark bg-dark px-4">
+            <a class="navbar-brand"><i class="fa-solid fa-compass-drafting"></i></a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link{% if request.session.position == 'home' %} active{% endif %}" href="/data/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link{% if request.session.position == 'study' %} active{% endif %}" href="/data/study">Study</a>
+                    </li>
+                    <!-- <li class="nav-item">
                     <a class="nav-link{% if request.session.position == 'section' %} active{% endif %}" href="/data/section">Section</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link{% if request.session.position == 'question' %} active{% endif %}" href="/data/question">Question</a>
                 </li> -->
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link{% if request.session.position == 'section' or request.session.position == 'question' or request.session.position == 'picture' %} active{% endif %} dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Setup
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                      <a class="dropdown-item" href="/data/section">Section</a>
-                      <a class="dropdown-item" href="/data/question">Question</a>
-                      <a class="dropdown-item" href="/data/picture">Picture</a>
-                    </div>
-                  </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link{% if request.session.position == 'section' or request.session.position == 'question' or request.session.position == 'picture' %} active{% endif %} dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Setup </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="/data/section">Section</a>
+                            <a class="dropdown-item" href="/data/question">Question</a>
+                            <a class="dropdown-item" href="/data/picture">Picture</a>
+                        </div>
+                    </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link{% if request.session.position == 'search' %} active{% endif %}" href="/data/question/search">Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link{% if request.session.position == 'quiz' %} active{% endif %}" href="/data/quiz">Quiz</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link{% if request.session.position == 'reference' %} active{% endif %}" href="/data/reference">Reference</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="text-end">
+                <div class="m-auto my-0 bg-transparent text-light">
+                    <span>{{ request.session.headers.text }}</span>
+                    <img class="header-img" src="{{ request.session.headers.image }}" />
+                </div>
+            </div>
+        </nav>
 
-                <li class="nav-item">
-                    <a class="nav-link{% if request.session.position == 'search' %} active{% endif %}" href="/data/question/search">Search</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link{% if request.session.position == 'quiz' %} active{% endif %}" href="/data/quiz">Quiz</a>
-                </li>
-            </ul>
-        </div>
-        <div class="text-end">
-            <div class="m-auto my-0 bg-transparent text-light">                
-                <span>{{ request.session.headers.text }}</span>
-                <img class="header-img" src="{{ request.session.headers.image }}"/> 
-              </div>
-        </div>
-    </nav>
-
-    {% block content %}
-    {% endblock content %}
-
-    {% block footer %}
-    {% endblock footer %}
-
-</body>
-
+        {% block content %} 
+        {% endblock content %} 
+        
+        {% block footer %}
+        <footer class="footer bg-dark text-white text-center py-3 d-flex align-items-center">
+            <p class="flex-grow-1 mb-0">This project is for demonstration and educational purposes. {{ request.session.position }}</p>
+            <div>
+                <a href="https://www.linkedin.com/in/cwchanst/" target="_blank" class="text-white mx-2">
+                    <i class="fab fa-linkedin fa-lg"></i>
+                </a>
+                <a href="https://github.com/cwchan0212" target="_blank" class="text-white mx-2">
+                    <i class="fab fa-github fa-lg"></i>
+                </a>
+            </div>
+        </footer>
+        {% endblock footer %}
+    </body>
 </html>

@@ -2,17 +2,13 @@ import random, json
 from django.utils.http import urlencode
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
-
 from django.utils import timezone
 from datetime import datetime
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Section, Question, Choice, Answer, Picture
-
 # Create your views here.
-
 ###################################################################################################
 # Index page redirect to /data/quiz/
 def index(request):
@@ -20,7 +16,21 @@ def index(request):
         del request.session["position"] 
     except:
         pass
-    return redirect("/data/quiz")
+    return redirect("/data/home")
+
+def home_index(request):
+    request.session["position"] = "home"
+
+    headers = {
+        "text": "Get ready!?",
+        "image": "/static/img/home.png"
+    }
+    request.session["headers"] = headers
+    context = {
+        "headers": headers
+    }
+
+    return render(request, "data/home.html", context)
 
 ###################################################################################################
 # Section: index
@@ -33,14 +43,12 @@ def section_index(request):
         "image": "/static/img/setup-section.png"
     }
     request.session["headers"] = headers
-
     if sections:
         context = {
             "sections": sections,
             "headers": headers,
         }
     return render(request, "data/section/index.html", context)
-
 ###################################################################################################
 # Section: add new 
 def section_add(request):
@@ -59,7 +67,6 @@ def section_add(request):
         return HttpResponseRedirect("/data/section")
     else:
         return HttpResponseRedirect("/data/section")
-
 ###################################################################################################
 # Section: update or delete 
 def section_action(request):
@@ -88,7 +95,6 @@ def section_action(request):
                 return HttpResponseRedirect("/data/section")
     else:
         return HttpResponseRedirect("/data/section")
-
 ###################################################################################################
 # Question: index
 def question_index(request):
@@ -101,14 +107,12 @@ def question_index(request):
         "image": "/static/img/setup-question.png"
     }
     request.session["headers"] = headers
-
     questions = Question.all_with_page(page_number, direction)
     context = {
         "questions": questions,
         "headers": headers,
     }
     return render(request, "data/question/index.html", context)
-    
 ###################################################################################################
 # Question: Add new
 def question_new(request):
@@ -126,7 +130,6 @@ def question_new(request):
             "headers": headers,
         }
     return render(request, "data/question/add.html", context)
-
 ###################################################################################################
 # question: add new 
 def question_add(request):
@@ -138,44 +141,35 @@ def question_add(request):
         answer_type_checked = False
         question_text, action = "", ""
         choice_text, answer_id = [], []
-
         if "answer_type" not in question_form_dictionary: 
             question_form_dictionary["answer_type"] = ""
-
         if "answer_id" not in question_form_dictionary: 
             question_form_dictionary["answer_id"] = ""
-
         section_id = question_form_dictionary.get("section_id")
         question_text = question_form_dictionary.get("question_text").strip()
         question_explanation = question_form_dictionary.get("question_explanation").strip()
         answer_type = question_form_dictionary.get("answer_type")
         choice_text = question_form_dictionary.getlist("choice_text")
         answer_id = question_form_dictionary.getlist("answer_id")
-
         if not section_id:
             messages.error(request, "Please select the section.")
         else:
             question_form_dictionary["section_id"] = int(section_id)
         if not question_text:
             messages.error(request, "Please select the question.")
-
         if not answer_type or (answer_type != "1" and answer_type != "2"):
             messages.error(request, "Please select the answer type.")
         else:
             question_form_dictionary["answer_type"] = int(answer_type)
-
         if answer_type == "1" and choice_text.count("") > number_of_option - 2:
             messages.error(request, f"Please select the choice X ??? .  {answer_type} {choice_text}")
         else:
             question_form_dictionary["choice_text"] = choice_text
-
         if "" in answer_id:
             messages.error(request, "Please select the answer(s).")
         else:   
             question_form_dictionary["answer_id"] = answer_id
-
         message_list = list(messages.get_messages(request))
-
         if not message_list:
             section = Section.id(section_id)
             question_dictonary = {
@@ -184,18 +178,15 @@ def question_add(request):
                 "section": section,
             }
             question_id = Question.insert(question_dictonary)
-
             if question_id:
                 question_one = Question.id(question_id)
                 choice_id_list = []
-
                 if answer_type == "1":
                     choice_range = range(number_of_option)
                 elif answer_type == "2":
                     choice_range = range(number_of_option, len(choice_text))
                 else:
                     choice_range = []
-
                 for index in choice_range:
                     one = choice_text[index].strip()
                     if one: 
@@ -205,23 +196,19 @@ def question_add(request):
                         }
                         choice_id = Choice.insert(choice_dictionary)
                         choice_id_list.append(choice_id)
-
                 for index, one in enumerate(answer_id):
                     if answer_type == "1":
                         choice_id = choice_id_list[int(one)-1]
                     elif answer_type == "2":
                         choice_id = choice_id_list[int(one)-1-number_of_option]
-
                     choice_one = Choice.id(choice_id)
                     answer_dictionary = {
                         "question": question_one,
                         "choice": choice_one,
                     }
                     answer = Answer.insert(answer_dictionary)
-                    
                 messages.success(request, f"The question is CREATED successfully. [#{question_id}]")
                 return HttpResponseRedirect("/data/question")
-
             return HttpResponse(question_id)
         else:
             sections = Section.all()
@@ -232,7 +219,6 @@ def question_add(request):
                     "input": question_form_dictionary
                 }
             return render(request, "data/question/add.html", context)
-
 ###################################################################################################
 # Question: edit / update / delete
 def question_action(request):
@@ -244,7 +230,6 @@ def question_action(request):
         "image": "/static/img/question.png"
     }
     request.session["headers"] = headers
-
     if request.method == "POST" and action and question_id:        
         if action == "edit":
             sections = Section.all()
@@ -278,10 +263,8 @@ def question_action(request):
                     answer_id = [int(v) for v in value if v]
                 elif key == "action":
                     action = value
-
             question_dictionary, choice_dictionary, answer_dictionary = {}, {}, {}
             choice_id_list = []
-
             if section_id and question_id and question_text and choice_id and choice_text and answer_id and action:
                 this_section = Section.id(section_id)
                 question_dictionary = {
@@ -290,7 +273,6 @@ def question_action(request):
                     "section": this_section
                 }
                 question_updated = Question.update(question_id, question_dictionary)
-
                 if question_updated:
                     if choice_id and answer_id: 
                         for index, id in enumerate(choice_id):
@@ -309,37 +291,30 @@ def question_action(request):
                                     "choice": choice_one,
                                 }
                                 answer_one = Answer.insert(answer_dictionary)
-
                             messages_to_remove = messages.get_messages(request)
                             for message in messages_to_remove:
                                 message.delete()
-
                             messages.success(request, f"The question is UPDATED successfully. [#{question_id}]")
                             return HttpResponseRedirect("/data/question")
-
         elif action == "delete":
             row_affected = Question.delete(question_id)
             messages.success(request, f"The question is DELETED successfully. [#{question_id}]")
             return HttpResponseRedirect("/data/question")
-
 ###################################################################################################
 # Question: search
 def question_search(request):
     request.session["position"] = "search"
     referral_url = request.META.get('HTTP_REFERER', None)
     headers = {
-        "text": "Search questions by keyword",
+        "text": "Search questions",
         "image": "/static/img/search.png"
     }
     request.session["headers"] = headers
-
     if referral_url is not None and "search" not in referral_url and "inputs" in request.session:
         del request.session["inputs"]
-
     sections = Section.all()
     page_number = request.GET.get("page", 1)
     questions = None
-
     if request.method == "POST":
         inputs = {
             "section_id": request.POST.get("section_id"),
@@ -350,24 +325,22 @@ def question_search(request):
         inputs = request.session.get("inputs", {})
     else:
         return HttpResponse("Method not allowed", status=405)
-    
     section_id, keyword = inputs.get("section_id"), inputs.get("keyword")
-
+    number_of_items = 12
     if section_id and keyword:
-        questions = Question.search_by_keyword_with_page(section_id, keyword, page_number)
-
+        questions = Question.search_by_keyword_with_page(section_id, keyword, page_number, number_of_items)
     context = {
         "sections": sections,
         "section_id": section_id,
         "inputs": inputs,
         "questions": questions,
-        "headers": headers
+        "headers": headers,
+        "number_of_items": number_of_items,
     }
     return render(request, "data/question/search.html", context)
-
 ###################################################################################################
 # Quiz: index
-def quiz_index(request, section_id="1"):    
+def quiz_index(request, section_id="6"):    
     request.session["position"] = "quiz"
     sections = Section.all()
     context = {
@@ -380,6 +353,20 @@ def quiz_index(request, section_id="1"):
     }
     request.session["headers"] = headers
 
+    if request.method == "GET":
+        # default section_id = 6
+        questions, choices, answers = Question.one_section_random(section_id = section_id)
+        inputs = {
+            "section_id": section_id, 
+        }
+        context = {
+            "questions": questions,
+            "sections": sections,
+            "choices": choices,
+            "answers": answers,
+            "inputs": inputs,
+            "quiz_mode": "random"
+        }
     if request.method == "POST":
         section_id = request.POST.get("section_id")
         if section_id:
@@ -408,20 +395,17 @@ def quiz_index(request, section_id="1"):
         else:
             quiz_mode = request.POST.get("quiz_mode")
     return render(request, "data/quiz/index.html", context)
-
 ###################################################################################################
 # Quiz: mode (obsolete)
 def quiz_mode(request):
     referrer = request.META.get('HTTP_REFERER')
     suffix_referrer = referrer.split("/")[-1]
-
     if request.method == "POST":
         section_id = request.POST.get("section_id")
         request.session['section_id'] = section_id
         quiz_mode = request.POST.get("quiz_mode")
         request.session["quiz_mode"] = quiz_mode
     return redirect(referrer)
-
 ###################################################################################################
 # Quiz: Answer in JSON (obsolete)
 def quiz_answer(request, question_id):
@@ -431,7 +415,6 @@ def quiz_answer(request, question_id):
         "answers": answers
     }    
     return JsonResponse(response)
-
 ###################################################################################################
 # Picture: Index
 def picture_index(request):
@@ -439,50 +422,22 @@ def picture_index(request):
     sections = Section.all()
     headers = {
         "text": "Manage media library",
-        "image": "/static/img/quiz.png"
+        "image": "/static/img/picture.png"
     }
     request.session["headers"] = headers
     context = {
         "sections": sections,
         "headers": headers,
     }
-
     if request.method == "GET":
-        # pictures = Picture.all()        
-        # context["pictures"] = pictures
-
         pictures = None
         direction = -1
         page_number = request.GET.get("page", 1)
-    
         pictures = Picture.all_with_page(page_number, direction)
         context["pictures"] = pictures
-        
         return render(request, "data/picture/index.html", context)
-    ############################################
-
     
-
-# def question_index(request):
-#     request.session["position"] = "question"
-#     questions = None
-#     direction = -1
-#     page_number = request.GET.get("page", 1)
-#     headers = {
-#         "text": "Store the question banks",
-#         "image": "/static/img/setup-question.png"
-#     }
-#     request.session["headers"] = headers
-
-#     questions = Question.all_with_page(page_number, direction)
-#     context = {
-#         "questions": questions,
-#         "headers": headers,
-#     }
-#     return render(request, "data/question/index.html", context)
-
     elif request.method == "POST":
-
         if request.POST.get("picture_mode") == "add":
             section_id = request.POST.get("section_id")
             prefix = request.POST.get("prefix").strip()
@@ -497,13 +452,10 @@ def picture_index(request):
                 "headers": headers,
                 "inputs": inputs
             }
-            
             if not prefix: 
                 messages.error(request, "Please enter the prefix.")
-
             if not description:
                 messages.error(request, "Please enter the description.")
-            
             if not request.FILES:
                 messages.error(request, "Please upload the picture.")
             else: 
@@ -511,9 +463,7 @@ def picture_index(request):
                 picture_filename = picture_file.name
                 picture_blob = picture_file.read()
                 picture_size = picture_file.size
-
             message_list = list(messages.get_messages(request))
-
             if not message_list:      
                 section = Section.id(inputs["section_id"])
                 picture_dictionary = {
@@ -524,7 +474,6 @@ def picture_index(request):
                     "picture_size": picture_size,
                     "section": section
                 }
-
                 picture_id = Picture.insert(picture_dictionary)
                 if picture_id:
                     pictures = Picture.all()
@@ -541,19 +490,16 @@ def picture_index(request):
                     "pictures": Picture.all(),
                     "inputs": inputs,
                 }        
-
         elif request.POST.get("picture_mode") == "update": 
             picture_id = request.POST.get("picture_id")
             section_id = request.POST.get("section_id")
             prefix = request.POST.get("prefix").strip()
             description = request.POST.get("description").strip()
-
             picture_dictionary = {
                 "picture_prefix": prefix,
                 "picture_description": description,
                 "section": Section.id(section_id),
             }
-
             if section_id and picture_id and prefix and description:
                 row_affected = Picture.update(picture_id, picture_dictionary)
                 context = {
@@ -561,16 +507,11 @@ def picture_index(request):
                     "pictures": Picture.all(),
                 }
                 messages.success(request, f"The picture is UPDATED successfully. [#{picture_id}]")
-
-
             else:
                 if prefix is None:
                     messages.error(request, f"Please enter the prefix.")
-                
                 if description is None:
                     messages.error(request, f"Please enter the description.")
-
-
         elif request.POST.get("picture_mode") == "delete":
             picture_id = request.POST.get("picture_id")
             if picture_id:
@@ -581,41 +522,21 @@ def picture_index(request):
                     "pictures": pictures,
                 }
                 messages.success(request, f"The picture is DELETED successfully. [#{picture_id}]")
-        
         referral_url = request.META.get('HTTP_REFERER', None)
         suffix_referrer = referral_url.split("/")[-1]
         redirect_url = "/data/picture"
-        # print("referral", suffix_referrer, "?page=" in suffix_referrer)
-
         if "?page=" in suffix_referrer:
             redirect_url = f"/data/{suffix_referrer}"
-
         return redirect(redirect_url)
-        # return render(request, "data/picture/index.html", context)
-###################################################################################################
-# Picture: Show
-def picture_show(request):
-    prefix = "2_1"
-    picture = Picture.one(prefix)
-    context = {
-        "picture": picture,
-    }
-
-    return render(request, "data/picture/show.html", context)
-
-
 ###################################################################################################
 # Study: Index
 def study_index(request):
-    
     request.session["position"] = "study"
     headers = {
         "text": "Master the knowledge ",
         "image": "/static/img/study.png"
     }
-
     pictures = Picture.all()
-
     # pictures = {
     #     "2_1": [2, "mapofuk.jpg", "The countries that make up the UK: England, Scotland, Wales and Northern Ireland"],
     #     "3_1": [3, "stonehenge-aerial.jpg", "The world heritage site of Stonehenge"],
@@ -655,7 +576,6 @@ def study_index(request):
     #     "4_15": [4, "snowdonia.jpg", "Snowdonia"],
     #     "4_16": [4, "tower-of-london.jpg", "The Tower of London"],
     #     "4_17": [4, "lake-district.jpg", "The Lake District"],	
-
     #     "5_1": [5, "queen-of-england.jpg", "Queen Elizabeth II, head of state of the UK"],
     #     "5_2": [5, "houses-of-parliament.jpg", "The Houses of Parliament, one of the centres of political life in the UK and a World Heritage Site"],
     #     "5_3": [5, "The-Welsh-Assembly-building.jpg", "The Welsh Assembly building, opened in March 2006"],
@@ -665,10 +585,18 @@ def study_index(request):
     #     "5_7": [5, "homework.jpg", "Parents often help in classrooms, by supporting activities or listening to children read"],	
     #     "5_8": [5, "volunteer-work.jpg", "Voluntary organization work to improve the lives of people, animals and environment in many different ways"],	
     # }
-
     request.session["headers"] = headers
     context = {
         "headers": headers,
         "pictures": pictures,
     }
     return render(request, "data/study/index.html", context)
+###################################################################################################
+def reference_index(request):
+
+    request.session["position"] = "reference"
+    headers = {
+        "text": "Master the knowledge ",
+        "image": "/static/img/study.png"
+    }
+    return render(request, "data/reference/index.html")

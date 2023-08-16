@@ -9,6 +9,9 @@ urlpatterns = [
 #---------------------------------------------------------------------------------------------------------------------#
     # Map the paths to main page index and login/logout + random quote
     path('', views.index, name='index'),
+
+    path("data/home", views.home_index, name="home_index"),
+
     path("data/section", views.section_index, name="section_index"),
     path("data/section/add", views.section_add, name="section_add"),
     path("data/section/action", views.section_action, name="section_action"),
@@ -20,13 +23,13 @@ urlpatterns = [
     path("data/question/search", views.question_search, name="question_search"),
 
     path("data/picture", views.picture_index, name="picture_index"),
-    path("data/picture/show", views.picture_show, name="picture_show"),
-
 
     path("data/quiz", views.quiz_index, name="quiz_index"),
     path("data/quiz/mode", views.quiz_mode, name="quiz_mode"),
     path("data/quiz/<int:question_id>", views.quiz_answer, name="quiz_answer"),
 
     path("data/study", views.study_index, name="study_index"),
-    
+
+    path("data/reference", views.reference_index, name="reference_index"),
+
 ]

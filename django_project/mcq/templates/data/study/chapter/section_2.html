@@ -1,0 +1,21 @@
+{% load static %} 
+{% load mcq_filters %} 
+
+<div class="chapter-header">
+    <h2><a name="chapter2">Chapter 2: What is the UK?</a></h2>
+</div>
+<article id="section2_1">
+    <div class="paragraph">The UK is made up of England, Scotland, Wales and Northern Ireland. The rest of Ireland is an independent country.</div>
+    {{ pictures|picture_box:1|safe }}
+    
+    {% comment %} {{ pictures|picture_grid:"2_1"|safe }} {% endcomment %}
+    <div class="paragraph">The official name of the country is the United Kingdom of Great Britain and Northern Ireland. ‘Great Britain’ refers only to England, Scotland and Wales, not to Northern Ireland. The words ‘Britain’, ‘British Isles’ or ‘British’, however, are used in this book to refer to everyone in the UK.</div>
+    <div class="paragraph">There are also several islands which are closely linked with the UK but are not part of it: the Channel Islands and the Isle of Man. These have their own governments and are called ‘Crown dependencies’. There are also several British overseas territories in other parts of the world, such as St Helena and the Falkland Islands. They are also linked to the UK but are not a part of it.</div>
+    <div class="paragraph">The UK is governed by the parliament sitting in Westminster. Scotland, Wales and Northern Ireland also have parliaments or assemblies of their own, with devolved powers in defined areas.</div>
+    <div class="understand-area1">
+        <b>Check that you understand</b>
+        <ul>
+            <li>The different countries that make up the UK</li>
+        </ul>
+    </div>
+</article>
